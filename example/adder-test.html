@@ -1,0 +1,53 @@
+<script src="../tinytest.js"></script>
+<!-- <script src="adder.js"></script> -->
+<script>
+
+  // forEach([3, 4, 5], function () {
+  //   console.log('hi');
+  // });
+
+  function forEach(array, callback) {
+    for (var i = 0; i < array.length; i++) {
+      callback(array[i]);
+    }
+  }  
+
+  tests({
+    "It should run cbfn array.length 3 times": function () {
+      // fail();
+      var counter = 0;
+      forEach([3, 4, 5], function () {
+        counter++;
+      });
+      eq(counter, 3)
+    },
+    "It should pass in the ith elem as the first arg to the cbfn": function () {
+      // fail();
+      forEach([3], function(num) {
+        eq(num, 3)
+      });
+    }
+  });
+
+</script>
+
+
+
+<!-- 
+
+forEach([3,4,5], function(){
+  console.log('hi');
+});
+
+tests({
+  "": function () {
+    fail();
+    eq(, )
+  },
+  "": function () {
+    fail();
+    eq(, )
+  }
+});
+
+-->
