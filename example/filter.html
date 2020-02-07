@@ -1,0 +1,51 @@
+<script src="../tinytest.js"></script>
+<!-- <script src="adder.js"></script> -->
+<script>
+
+  //  The filter() method creates a new array with all elements that pass the boolean test of the provided function. 
+  // let newArray = arr.filter(callback(element[, index, [array]])[, thisArg])
+
+  var filter = function (element, index, array) {
+    return true;
+  };
+
+  // filter([3, 4, 5](function (element, index, array) {
+  //   return true;
+  // });
+
+  // Example 1:
+  filter([3, 4, 5], function () {});
+
+  tests({
+    "The cbfn should run array.length times": function () {
+      let timesCbfnRan = 0;
+      filter([3,4,5])
+      fail();
+      eq(timesCbfnRan, 3)
+    },
+    "": function () {
+      fail();
+      eq()
+    }
+  });
+
+</script>
+
+
+<!--
+forEach([3,4,5], function(){
+  console.log('hi');
+});
+
+tests({
+  "": function () {
+    fail();
+    eq(, )
+  },
+  "": function () {
+    fail();
+    eq(, )
+  }
+});
+-->
+
