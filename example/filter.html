@@ -3,15 +3,20 @@
 <script>
 
   //  The filter() method creates a new array with all elements that pass the boolean test of the provided function. 
-  // let newArray = arr.filter(callback(element[, index, [array]])[, thisArg])
+  // let newArray = 
+  // arr.filter(callback(element[, index, [array]])[, thisArg])
 
-  var filter = function (element, index, array) {
-    return true;
-  };
-
-  // filter([3, 4, 5](function (element, index, array) {
+  // var filter = function (element, index, array) {
   //   return true;
-  // });
+  // };
+
+function filter(array, cbfn){
+  var count = 0;
+  for (var i = 0; i < array.length; i++) {
+    count = count + 1;
+  }
+  return count;
+}
 
   // Example 1:
   filter([3, 4, 5], function () {});
@@ -19,8 +24,9 @@
   tests({
     "The cbfn should run array.length times": function () {
       let timesCbfnRan = 0;
-      filter([3,4,5])
-      fail();
+      filter([3,4,5], function() {
+        
+      })
       eq(timesCbfnRan, 3)
     },
     "": function () {
@@ -49,3 +55,5 @@ tests({
 });
 -->
 
+
+<!-- // <h2>Test os lineout</h2> -->

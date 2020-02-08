@@ -1,50 +1,10 @@
 <script src="../tinytest.js"></script>
-<!-- <script src="adder.js"></script> -->
 <script>
 
-  function forEach(array, callback, optionalThisObject) {
-    var forEachCallback = callback;
-    if (optionalThisObject) {
-      forEachCallback = callback.bind(optionalThisObject);
-    }
-    for (var i = 0; i < array.length; i++) {
-      forEachCallback(array[i], i, array);
-    }
-  }  
-
-  tests({
-    "It should run cbfn array.length 3 times": function () {
-      var numberOfTimesCBFNhasRun = 0;
-      forEach([3, 4, 5], function () {
-        numberOfTimesCBFNhasRun++;
-      });
-      eq(numberOfTimesCBFNhasRun, 3)
-    },
-    "It should pass in the ith elem as the first arg to the cbfn": function () {
-      forEach([3], function (num) {
-        eq(num, 3)
-      });
-    },
-    "It should pass in the ith position as the 2d arg to the cbfn": function () {
-      forEach([3], function (num, index) {
-        eq(index, 0);
-      });
-    },
-    "It should pass in the orig array as the 3d cbfn": function () {
-      var testArray = [4, 5, 6]
-      forEach(testArray, function (num, index, origArray) {
-        eq(origArray, testArray)
-      });
-    },
-    "It should accept an optional this object": function () {
-      forEach([3], function () {
-          eq(this.description, 'I am a configurable this object');
-      },
-      {description: "I am a configurable this object"}); /* optional this  */
-    }
-  });
-
 </script>
+
+
+
 
 
 <!--
