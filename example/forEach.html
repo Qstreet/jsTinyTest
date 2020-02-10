@@ -1,11 +1,47 @@
 <script src="../tinytest.js"></script>
 <script>
+  // examples which will be moved into tests to prove that forEach works.
+  // Example 1
+  // forEach([3, 4, 5], function () {
+  //   console.log("forEach Here");
+  // })
 
+  // // Example 2
+  // forEach([3, 4, 5], function (number) {
+  //   console.log(number);
+  // })
+
+  // define function that will be tested
+  // it will not run until called by each test in tests()
+
+  function forEach(array, callback) {
+    for (var i = 0; i < array.length; i++) {
+      /* loop through array. this is NOT the CBFN */
+      /* the Loop does NOT provide the i-th. it just cylces the call array.length times. all the calls come from the CBFN */
+      callback(array[i]); /* call CBFN. i is from the loop c01  */
+    }
+  }
+
+  tests({
+    "It should run the cbfn array.length times": function() {
+      /* Example 1 */
+      var countTimesCBFNruns = 0;
+      // now call function forEach on line 18
+      forEach(
+        [3, 4, 5], // array to pass to line 18
+        function() {
+          countTimesCBFNruns++;
+        }
+      ); /* c01 this is the CBFN passed to forEach. all it does is count */
+      eq(countTimesCBFNruns, 3);
+    },
+    "It should pass the i-th element as the first arg to the cbfn": function() {
+      /* Example 2 */
+      forEach([3],
+      function(num) { eq(num, 3); });
+    }
+  });
 </script>
-
-
-
-
 
 <!--
 forEach([3,4,5], function(){
@@ -23,4 +59,3 @@ tests({
   }
 });
 -->
-
