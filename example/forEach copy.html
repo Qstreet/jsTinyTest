@@ -1,0 +1,86 @@
+<script src="../tinytest.js"></script>
+<script>
+
+  function forEach(array, callback, configurableThisObject) {
+    var forEachCallback = callback;
+    
+    if (configurableThisObject) {
+      forEachCallback = callback.bind(configurableThisObject);
+    }
+    for (var i = 0; i < array.length; i++) {
+      forEachCallback(array[i], i, array);
+    }
+  }
+
+  /** tests is a function with an obj with x number of
+   * methods or properties (key:value) pairs 
+   */ 
+
+  tests({
+    // Ex 01
+    "it should run the cbfn array.length times": function() {
+      /* this fn is NOT the CBFN. it is the test */
+      var counter = 0;
+      /* start the call to forEach with array and cbfn as arguments */
+      forEach([3, 4, 5], function() {
+        /* this fn should run 3x */
+        counter++; /* yields a single number for the eq test */
+      });
+      eq(counter, 3);
+    },
+    // Ex 02
+    "it should pass in the i-th elem as the first arg to the cbfn": function() {
+      /* this fn is NOT the CBFN. it is the test */
+      /* start the call to forEach with array and cbfn as arguments */
+      forEach([2], function(value) {
+        eq(value, 2);
+      });
+    },
+    // Ex 03
+    "it should pass in the index of the current elem as the 2d arg to the cbfn": function() {
+      /* this fn is NOT the CBFN. it is the test */
+      /* start the call to forEach with array and cbfn as arguments */
+      forEach([3], function(value, index) {
+        eq(index, 0);
+      });
+    },
+    // Ex 04
+    "it should pass orig array as 3d arg": function() {
+      /* this fn is NOT the CBFN. it is the test */
+      /* start the call to forEach with array and cbfn as arguments */
+      var testArray = [
+        3,
+        4,
+        5
+      ]; /* need to have a way to rep array for comparison */
+      forEach(testArray, function(value, index, origArray) {
+        eq(testArray, origArray);
+      });
+    },
+    // Ex 05
+    "Optional this": function() {
+      /* this fn is NOT the CBFN. it is the test */
+      /* start the call to forEach with array and cbfn as arguments */
+      forEach(
+        [5],
+        function(value, index, origArray) {
+          eq(this.description, "configurable this object");
+        },
+        { description: "configurable this object" }
+      );
+    }
+  });
+</script>
+
+<!-- 
+  tests({
+  'It should do something': function () {
+    false();
+    eq(7, add(2,5));
+  },
+  'It should do something': function () {
+    false();
+    eq(7, add(2, 5));
+  }
+})
+ -->

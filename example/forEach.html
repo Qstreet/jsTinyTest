@@ -1,104 +1,79 @@
 <script src="../tinytest.js"></script>
 <script>
-  // examples which will be moved into tests to prove that forEach works.
-  // Example 1
-  // forEach([3, 4, 5], function () {
-  //   console.log("forEach Here");
-  // })
+  // Example 1: log ex1 for each elem in array
+  // function forEach([3, 4, 5], function() {
+  //     console.log("ex1");
+  //   });
 
-  // // Example 2
-  // forEach([3, 4, 5], function (number) {
-  //   console.log(number);
-  // })
+  // Example 2: It should pass ea elem as the first arg to cbfn
+  // function forEach([3, 4, 5],
+  //   function(num) {
+  //     console.log(num);
+  //   });
 
-  // // Example 3
-  // the index of the current elem begin processed in the array
-  // forEach([3, 4, 5], function (number, index) {
-  //   console.log(index);
-  // })
+  // Example 3: It should pass the idx of the current elem
+  // function forEach([5],
+  //   function(num, idx) {
+  //     console.log(idx);
+  //   });
 
-  // // Example 4
-  // the original array
-  // forEach([3, 4, 5], function (number, index, array) {
-  //   console.log(array);
-  // })
+  // Example 4: It should pass the orig array
+  // function forEach([5],
+  //   function(num, idx, array) {
+  //     console.log(array);
+  //   });
 
-  // define function that will be tested
-  // it will not run until called by each test in tests()
 
-  function forEach(array, callback, configurableThisObject) {  /* *01* */
-    var forEachCallback = callback;
 
-    if (configurableThisObject) {
-      forEachCallback = callback.bind(configurableThisObject);
-    }
 
+  function forEach(array, callback, configThis) {
     for (var i = 0; i < array.length; i++) {
-      /* loop through array. this is NOT the CBFN */
-      /* the Loop does NOT provide the i-th. it just cylces the call array.length times. all the calls come from the CBFN */
-      forEachCallback(
-        array[i],
-        i,
-        array
-      ); /* call CBFN. i is from the loop 20  */
+      callback(array[i], i, array);
     }
   }
 
+
   tests({
-    "It should run the cbfn array.length times": function() {
-      var countTimesCBFNruns = 0;
-      // now call function forEach on line *01*
-      forEach(
-        [3, 4, 5], // array to pass to line *01*
-        function() {
-          /* *01* is the CBFN passed to forEach. all it does is count */
-          countTimesCBFNruns++;
-        }
-      );
-      eq(countTimesCBFNruns, 3);
+    "It should run forEach array.length x": function() {
+      var counter = 0;
+      forEach([3, 4, 5], function() {
+        counter++;
+    });
+     eq(counter,3);
     },
-    "It should pass the i-th element as the first arg to the cbfn": function() {
-      forEach([3], function(num) {
-        eq(num, 3);
-      });
+    "It should pass i-th elem as the first arg to cbfn": function () {
+      forEach([4], function (num) {
+        eq(num, 4)
+      })
     },
-    "the index of the current elem processed in the array": function() {
-      forEach([3], function(number, index) {
-        eq(index, 0);
-      });
+    "It should pass in i-th pos as 2d arg to cbfn": function () {
+      forEach([4], function (num, idx) {
+        eq(idx, 0)
+      })
     },
-    "Return the original array": function() {
-      var origArray = [3, 4, 5];
-      forEach(origArray, function(number, index, array) {
-        eq(origArray, array);
-      });
+    "It should pass the orig array as 3d arg to the cbfn": function () {
+      var arrayPassedToforEach = [5, 6, 7]
+      forEach(arrayPassedToforEach, function (num, idx, arrayPassedToCbfn) {
+        eq(arrayPassedToCbfn, arrayPassedToforEach)
+      })
     },
-    "It should accept a configurable this object": function() {
-      forEach(
-        [3],
-        function() {
-          eq(this.description, "I am a configurable this object");
-        },
-        { description: "I am a configurable this object" }
-      );
+    "It should accept a configurable this obj": function () {
+      forEach( [7], function(){
+          eq(this.description, "I am the config this")
+      }, {description: "I am the config this"} )
     }
   });
 </script>
 
-
- <!--
-forEach([3,4,5], function(){
-  console.log('hi');
-});
-
-tests({
-  "": function () {
-    fail();
-    eq(, )
+<!-- 
+  tests({
+  'It should do something': function () {
+    false();
+    eq(7, add(2,5));
   },
-  "": function () {
-    fail();
-    eq(, )
+  'It should do something': function () {
+    false();
+    eq(7, add(2, 5));
   }
-});
--->
+})
+ -->
