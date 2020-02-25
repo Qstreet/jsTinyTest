@@ -26,9 +26,15 @@
 
 
 
-  function forEach(array, callback, configThis) {
+  function forEach(array, callback, configThisObj) {
+    var forEachCallback = callback;
+
+    if (configThisObj){
+      forEachCallback = callback.bind(configThisObj)
+    }
+
     for (var i = 0; i < array.length; i++) {
-      callback(array[i], i, array);
+      forEachCallback(array[i], i, array);
     }
   }
 
@@ -57,7 +63,7 @@
         eq(arrayPassedToCbfn, arrayPassedToforEach)
       })
     },
-    "It should accept a configurable this obj": function () {
+    "It should accept an optional this obj": function () {
       forEach( [7], function(){
           eq(this.description, "I am the config this")
       }, {description: "I am the config this"} )
@@ -67,13 +73,17 @@
 
 <!-- 
   tests({
+
   'It should do something': function () {
     false();
     eq(7, add(2,5));
   },
+
   'It should do something': function () {
     false();
     eq(7, add(2, 5));
   }
+
 })
  -->
+

@@ -1,0 +1,149 @@
+<script src="../tinytest.js"></script>
+
+<script>
+
+  // let new_array = arr.map(function callback(currentValue[, index[, array]]) {
+  //     // return element for new_array
+  //   }[, thisArg])
+
+  function map(array, cbfn, configurableThisObj){
+    var mapCallback = cbfn;
+
+    if (configurableThisObj) {
+      mapCallback = cbfn.bind(configurableThisObj)
+    }
+
+    var mappedArray = [];
+
+    for (var i = 0; i < array.length; i++) {
+      if (i in array){
+       mappedArray[i] = mapCallback(array[i], i, array)
+      }
+    };
+
+    return mappedArray;
+
+  } 
+
+tests({
+
+  'It should return array.length': function () {
+    var counter = 0;
+    map([4, 5, 6], function () { counter++; })
+    eq(counter, 3)
+  },
+  'It should pass i-th value of array to first arg of cbfn': function () {
+    map([5], function (num) {
+      eq(num, 5)
+    });
+  },
+  'It should pass idx to 2d arg of cbfn': function () {
+    map([5], function (num, idx) {
+      eq(idx, 0)
+    });
+  },
+  'It should return array as 3d arg of cbfn': function () {
+    var testArray = [6, 7, 8]
+    map(testArray, function (num, idx, arrayToCbfn) {
+      eq(arrayToCbfn, testArray)
+    });
+  },
+  'It should accept a configurableThisObj': function () {
+    map([8], function () {
+      eq(this.description, "I am the map array config this obj")
+    }, { description: "I am the map array config this obj" });
+  },
+  'It should return a new array, not the original array': function () {
+    var originalArray = [];
+    var mappedArray = map(originalArray, function () {});
+    eq(mappedArray !== originalArray, true)
+  },
+  'It should return a mapped array': function () {
+    var mappedArray = map([7], function (currentValue) { return currentValue * 2 });
+    eq(mappedArray[0], 14)
+  },
+  'It should skip unassigned indexes ': function () {
+    var arrayWithBlanks = [,3]
+    var mappedArray = map(arrayWithBlanks, function double(number) { return number * 2 });
+      eq(0 in mappedArray, false);
+      eq(mappedArray[1], 6)
+  }
+  })
+
+
+
+
+  // tests({
+  //   /* Example 01 */
+  //   "it should run the cbfn array.length times": function() {
+  //     var counter = 0;
+  //     filter([4, 5, 6], function() {
+  //       counter++;
+  //     });
+  //     /* ^ callback fn */
+  //     eq(counter, 3);
+  //   },
+
+  //   /* Example 02 */
+  //   "it should pass the i-th elem to the first arg of the cbfn": function() {
+  //     filter([4], function(num) {
+  //       eq(num, 4);
+  //     });
+  //   },
+
+  //   /* Example 03 */
+  //   "it should pass the idx pos to the 2d arg of the cbfn": function() {
+  //     filter([4], function(num, idx) {
+  //       eq(idx, 0);
+  //     });
+  //   },
+
+  //   /* Example 04 */
+  //   "it should pass the orig array to the 3d arg": function() {
+  //     var arrayPassedToFilter = [7, 8, 9];
+  //     filter(
+  //       arrayPassedToFilter,
+
+  //       function(num, idx, arrayPassedToCbfn) {
+  //         eq(arrayPassedToCbfn, arrayPassedToFilter);
+  //       }
+  //     ),
+  //       { description: "I am the config this object" };
+  //   },
+
+  //   /* Example 05 */
+  //   "It should accept an optional this object": function() {
+  //     filter(
+  //       [1],
+  //       function() {
+  //         eq(this.description, "I am the opt this obj.");
+  //       },
+  //       { description: "I am the opt this obj." }
+  //     );
+  //   },
+
+  //   /* Example 06 */
+  //   "It should return an array": function() {
+  //     var testArray = [];
+  //     var filterdArray = filter(testArray, function() {
+  //       eq(filterdArray !== testArray, true);
+  //     });
+  //   },
+
+  //   /* Example 07 */
+  //   "it should return a new array, not the one filtered": function() {
+  //     var arrayBeingFiltered = [];
+  //     var filteredArray = filter(arrayBeingFiltered, function() {});
+  //     eq(filteredArray !== arrayBeingFiltered, true);
+  //   },
+
+  //   /* Example 08 */
+  //   "it should return a new array with elems where cbfn is true": function() {
+  //     var filteredArray = filter([11, 12], function(number) {  /* if true, add to filteredArray */
+  //       return number > 11;
+  //     });
+  //     eq(filteredArray.length, 1);
+  //     eq(filteredArray[0], 12);
+  //   }
+  // });
+</script>
