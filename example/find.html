@@ -5,12 +5,75 @@
 
 // find(arr, function(item, idx, array) {} );
 
-
+function find(array, cbfn) {
+  for (var i = 0; i < array.length; i++) {
+    cbfn(array[i])
+  }
+ }
 
 tests({
-  "It should pass i-th elem as a first arg": function () { },
-  "It should return the first elem resolves true ": function () { }
-  });
+    "It should pass i-th elem as 1st arg to cbfn": function () {
+      // false();
+      find([3], function (num) {
+        eq(num, 3)
+      })
+    },
+  "It should return the first truthy elem and stop iteration": function () {
+    // false();
+    find([3, 4, 5, 6], function (num) {
+      if (num % 2 !== 0) {
+        return;
+      }
+      if (num % 2 === 0) {
+        var answer = true
+        return;  // stops cbfn at first true
+      }
+        eq(answer, true)
+    })
+  },
+  "It should return undefined if no truthy elem found": function () {
+    // false();
+    find([3, 5], function (num) {
+      var answer = undefined;
+      if (num % 2 !== 0) {
+        return;
+      }
+      if (num % 2 === 0) {
+        var answer = true
+        return;  // stops cbfn at first true
+      }
+      eq(answer, undefined)
+    })
+  },
+  "It should vist empty elements in array and continue on": function () {
+    // false();
+    find([3, ,6], function (num) {
+      var answer = undefined;
+      if (num % 2 !== 0) {
+        return;
+      }
+      if (num % 2 === 0) {
+        var answer = 6
+        return;  // stops cbfn at first true
+      }
+      eq(answer, 6)
+    })
+  },
+  // "It should vist empty elements in array": function () {
+  //   // false();
+  //   find([3, , 6], function (num) {
+  //     var answer = undefined;
+  //     if (num % 2 !== 0) {
+  //       return;
+  //     }
+  //     if (num % 2 === 0) {
+  //       var answer = true
+  //       return;  // stops cbfn at first true
+  //     }
+  //     eq(answer, undefined)
+  //   })
+  // }
+})
 
 
 </script>
