@@ -1,127 +1,22 @@
 <script src="../tinytest.js"></script>
 <script>
 
-function find(array, cbfn, configurableThisObj) {
-  var findCbfn = cbfn;
+// 1. It should pass in the ith element as the first argument to the callback.
+// 2. It should pass in the ith index as the second argument to the callback.
+// 3. It should pass in the array being traversed as the third argument to the callback.
+// 4. It should accept an optional THIS object.
+// 5. It should return the first value in the array where the callback returns true.
+// 6. After it returns a value, the callback should stop visiting indexes.  
+// 7. It should return undefined if the callback does not return true for any element. 
+// 8. The callback should visit holes in the array. 
+// 9. If an univisted element in the array is changed, the callback should visit the element's new value. 
+// 10. The callback should visit elements deleted from the array.
+// 11. The callback should NOT visit elements appended to the end of the array. 
+// 12. It should NOT mutate the array before passing it into the callback.
 
-  if (configurableThisObj) {
-    findCbfn = cbfn.bind(configurableThisObj);
-  }
-  for (var i = 0; i < array.length; i++) {
-    findCbfn(array[i], i, array)
-  }
- }
 
-tests({
-  "It should pass i-th elem as 1st arg to cbfn": function () {
-      // false();
-      find([3], function (num) {
-        eq(num, 3)
-      })
-    },
-  "It should return the first truthy elem and stop iteration": function () {
-    // false();
-    find([3, 4, 5, 6], function (num) {
-      if (num % 2 !== 0) {
-        return;
-      }
-      if (num % 2 === 0) {
-        var answer = true
-        return;  // stops cbfn at first true
-      }
-        eq(answer, true)
-    })
-  },
-  "It should return undefined if no truthy elem found": function () {
-    // false();
-    find([3, 5], function (num) {
-      var answer = undefined;
-      if (num % 2 !== 0) {
-        return;
-      }
-      if (num % 2 === 0) {
-        var answer = true
-        return;  // stops cbfn at first true
-      }
-      eq(answer, undefined)
-    })
-  },
-  "It should vist empty elements in array and continue on": function () {
-    // false();
-    find([3, ,6], function (num) {
-      var answer = undefined;
-      if (num % 2 !== 0) {
-        return;
-      }
-      if (num % 2 === 0) {
-        var answer = 6
-        return;  // stops cbfn at first true
-      }
-      eq(answer, 6)
-    })
-  },
-  "It should have access to the orig array": function () {
-    find([3], function (elem, idx, origArray) {
-      eq(origArray, 3)
-    })
-  },
-  "It should return undefined if no configurable this object provided": function () {
-    find([3], function () {
-      eq(this.noThis, undefined)
-    })
-  },
-  "It should accept a configurable this object": function () {
-    find([3], function () {
-      eq(this.description, "Config This Object")
-    }, { description: "Config This Object" })
-  },
-  // "It should accept a configurable this object": function () {
-  //   find([3], function () {
-  //     eq(this.description, "Config This Object")
-  //   }, { description: "Config This Object" })
-  // }
-})
+
+
 
 
 </script>
-
-<!-- 
-The find() method immediatly returns the value of the first element in the provided array that satisfies the provided testing function. Otherwise, undefined is returned.
-
-arr.find(callback(element[, index[, array]])[, thisArg])
-
-arr.find(callback(element, index, array), thisArg)
-
-The find method executes the callback function once for each index of the array until the callback returns a truthy value. If so, find immediately returns the value of that element. Otherwise, find returns undefined.
-
-callback is invoked for every index of the array, not just those with assigned values. This means it may be less efficient for sparse arrays, compared to methods that only visit assigned values.
-
-a sparse array is one which may have non-contiguous subscripts. This may be created by assignments to non-contigous elements or by deletion of elements
-
-to skip over empty elements (sparse array), use for-in method. for-in will still visit null and undefined and will return as such
-
-for (let i in arr) {
-  console.log(arr[i])
-}
-
-vid on sparse arrays
-https://www.youtube.com/watch?v=zrA89yUUjNY
-
-If a thisArg parameter is provided to find, it will be used as the this value inside each invocation of the callback. If it is not provided, then undefined is used.
-
-The find method does not mutate the array on which it is called, but the function provided to callback can. If so, the elements processed by find are set before the first invocation of callback. 
-
-Therefore:
-
-callback will not visit any elements added to the array after the call to find begins.
-If an existing, yet-unvisited element of the array is changed by callback, its value passed to the callback will be the value at the time find visits that element's index.
-Elements that are deleted are still visited.
-
-
-It should return the first true find
-It should return a new, not mutated array
-It should have 3 parameters in cbfn
-It should stop after a single true return
-It should return undefined if all false
-
- -->
