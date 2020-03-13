@@ -1,0 +1,99 @@
+<script src="../tinytest.js"></script>
+<script>
+  // 1. It should pass in the ith element as the first argument to the callback.
+  // 2. It should pass in the ith index as the second argument to the callback.
+  // 3. It should pass in the array being traversed as the third argument to the callback.
+  // 4. It should accept an optional THIS object.
+  // 5. It should return the first value in the array where the callback returns true.
+  // 6. After it returns a value, the callback should stop visiting indexes.
+  // 7. It should return undefined if the callback does not return true for any element.
+  // 8. The callback should visit holes in the array.
+  // 9. If an univisted element in the array is changed, the callback should visit the element's new value.
+  // 10. The callback should visit elements deleted from the array.
+  // 11. The callback should NOT visit elements appended to the end of the array.
+  // 12. It should NOT mutate the array before passing it into the callback.
+
+  function find(array, cbfn, optionalThisObject) {
+    var callbackFunction = cbfn;
+    if (optionalThisObject) {
+      callbackFunction = cbfn.bind(optionalThisObject)
+    } 
+    for (var i = 0; i < array.length; i++) {
+      var isElementTrue = callbackFunction(array[i], i, array); // if 
+      if (isElementTrue) {
+        return array[i];
+      }
+    }
+    return undefined;
+  }
+
+  tests({
+    "It should pass in the i-th element as the first argument to the callback.": function() {
+      find([3], function(num) {
+        eq(num, 3);
+      });
+    },
+    "It should pass in the ith index as the second argument to the callback.": function () {
+      find([3], function (elem, index) {
+        eq(index, 0);
+      });
+    },
+    "It should pass in the array being traversed as the third argument to the callback.": function () {
+      testArray = [4, 5, 6];
+      find(testArray, function (elem, index, array) {
+        eq(array, testArray);
+      });
+    },
+    "It should accept an optional THIS object.": function () {
+      var optionalThisObject = {
+        name: "tom",
+        age: 22
+      }
+      find([3], function() { eq(this.name, 'tom') }, optionalThisObject );
+    },
+    "It should return the first value in the array where the callback returns true": function () {
+      var testArray = [3,4,5];
+      var value = find(testArray, function(num) {
+        return num > 3;
+      })
+      eq(value, 4);
+    },
+    "After it returns a value, the callback should stop visiting indexes.": function () {
+      var numberOfCallbacks = 0;
+      find([3, 4, 5, 6], function (num) { numberOfCallbacks++; return num > 4 })
+      eq(numberOfCallbacks, 3)
+    },
+    "It should return undefined if the callback does not return true for any element.": function () {
+      var findResult = find([3, 4, 5, 6], function (num) { return num > 7 })
+      eq(findResult, undefined)
+    },
+    "The callback should visit holes in the array.": function () {
+      var numberOfCallbacks = 0;
+      var findResult = find([3, 4, , 6], function (num) { numberOfCallbacks++ })
+      eq(numberOfCallbacks, 4)
+    },
+    "If an univisted element in the array is changed, the callback should visit the element's new value.": function () {
+      var testArray = [3,5,6]
+      var findResult = find(testArray, function (num, index) { testArray.splice(-1,1,9) })
+      eq(testArray[2], 9)
+    },
+    "The callback should visit elements deleted from the array.": function () {
+      var numberOfCallbacks = 0;
+      var testArray = [3, 4, 5]
+      var findResult = find(testArray, function (num) { numberOfCallbacks++; delete testArray[1] })
+      eq(numberOfCallbacks, 3)
+    },
+    "The callback should NOT visit elements appended to the end of the array.": function () {
+      var numberOfCallbacks = 0;
+      var testArray = [3, 4, 5]
+      var findResult = find(testArray, function (num) { numberOfCallbacks++; testArray.push(99) })
+      eq(numberOfCallbacks, 3)
+    },
+    "It should NOT mutate the array before passing it into the callback.": function () {
+      var numberOfCallbacks = 0;
+      var testArray = [3, 4, 5]
+      var findResult = find(testArray, function (num) { numberOfCallbacks++; testArray.push(99) })
+      eq(numberOfCallbacks, 3)
+    }
+  });
+</script>
