@@ -13,11 +13,27 @@
 
   tests({
     "It should execute the callback fn 1x per array.length.": function () {
-      var cyclesOfCallback = 0;
-      find([2, 3, 4], function () {
-        cyclesOfCallback++;
+        var cyclesOfCallback = 0;
+        find([2, 3, 4], function () {
+          cyclesOfCallback++;
+        });
+        eq(cyclesOfCallback, 3);
+      },
+    "It should pass in the i-th elem as the 1st arg to the cbfn": function () {
+      find([4], function (num) {
+        eq(num,4)
       });
-      eq(cyclesOfCallback, 3);
+    },
+    "It should pass in the i-th position as the 2d arg to the cbfn": function () {
+      find([3], function (num, pos) {
+        eq(pos, 0)
+      });
+    },
+    "It should pass in the orig array as the 3d arg to the cbfn": function () {
+      var testArray = [3, 4, 5]
+      find(testArray, function (num, idx, origArray) {
+        eq(origArray, testArray);
+      })
     },
     "It should return the first element of the array that passes the cbfn test.": function () {
       var firstTruthyElem = 0;
@@ -60,16 +76,8 @@
       find([4], function () {
         eq(this.description, 'I am the value of the optThisObject');
       }, { description: "I am the value of the optThisObject" });
-    },
-    /**
-     * below fn works but is it a realistic test? It doesn't look for truthy responses w find()
-     */ 
-    "It should not mutuate the original array.": function () {
-      var testArray = [3, 4, 5]
-      find(testArray, function(num, idx, origArray) {
-        eq(origArray, testArray);
-      })
-    },
+    }
+
     // "It should allow the array to be mutated by the cbfn before the first call of the cbfn.": function () {
     //   var testArray = [3,4,5];
     //   var arrayToMutate = [3,4,5];
@@ -119,13 +127,15 @@ It should use undefined if no this value is provided.
 
 Not sure if the last 5 work
 
-It should not mutuate the original array.
+It should pass in the orig array as the 3d arg to the cbfn
 It should allow the array to be mutated by the cbfn before the first call of the cbfn.
 It should not visit any elems added to the array after the call to find begins.
 It should use the value of an elem which existed when find visited that elem.
 It should visit deleted elements even if deleted by the cbfn.
 
-  find( origArray,
+It should not mutuate the original array.
+
+find( origArray,
 
   callback(
     origArray[i],
