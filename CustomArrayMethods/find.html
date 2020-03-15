@@ -76,6 +76,11 @@
       find([4], function () {
         eq(this.description, 'I am the value of the optThisObject');
       }, { description: "I am the value of the optThisObject" });
+    },
+    "It should not mutuate the original array.": function () {
+      find([4], function () {
+        eq(this.description, 'I am the value of the optThisObject');
+      }, { description: "I am the value of the optThisObject" });
     }
 
     // "It should allow the array to be mutated by the cbfn before the first call of the cbfn.": function () {
@@ -124,6 +129,7 @@ It should return the value of that first truthy test that passes.
 It should visit every index of the array, including blanks.
 It should use the thisObj value in each callback fn iteration if a thisObj is provided.
 It should use undefined if no this value is provided.
+It should not mutuate the original array.
 
 Not sure if the last 5 work
 
@@ -133,7 +139,7 @@ It should not visit any elems added to the array after the call to find begins.
 It should use the value of an elem which existed when find visited that elem.
 It should visit deleted elements even if deleted by the cbfn.
 
-It should not mutuate the original array.
+
 
 find( origArray,
 
