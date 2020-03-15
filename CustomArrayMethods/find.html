@@ -1,32 +1,57 @@
 <script src="../tinytest.js"></script>
 <script>
 
-  function find(array, cbfn, optionalThisObject) {
-    var findCallbackFn = cbfn;
-    if (optionalThisObject) {
-      findCallbackFn = cbfn.bind(optionalThisObject)
+/**
+ * top function copied form paul7599 github
+ */
+
+  function find(array, callback, optionalThis) {
+    var originalArray = [];
+    var length = array.length;
+    var findCallback = callback;
+
+    /* bind to thisObject if provided */
+    if (optionalThis) {
+      findCallback = callback.bind(optionalThis);
     }
-    for (var i = 0; i < array.length; i++) {
-      findCallbackFn(array[i], i, array);
+
+    /* build originalArray from array object values at each index */
+    /* also changed array.length to length */
+    for (var i = 0; i < length; i++) {
+      originalArray.push(array[i]);
     }
-  }
+
+    /* changed i to j to separate from above */
+    for (var j = 0; j < length; j++) {
+      if (findCallback(array[j], j, array)) {
+        if (length === originalArray.length) {
+          return array[j];
+        } else {
+          // array = originalArray;
+          // return array[j];
+          return originalArray[j];
+        }
+      }
+    }
+    return undefined;
+  };
 
   tests({
     "It should execute the callback fn 1x per array.length.": function () {
-        var cyclesOfCallback = 0;
-        find([2, 3, 4], function () {
-          cyclesOfCallback++;
-        });
-        eq(cyclesOfCallback, 3);
-      },
+      var cyclesOfCallback = 0;
+      find([2, 3, 4], function (num, idx, array) {
+        cyclesOfCallback++;
+      });
+      eq(cyclesOfCallback, 3);
+    },
     "It should pass in the i-th elem as the 1st arg to the cbfn": function () {
       find([4], function (num) {
         eq(num,4)
       });
     },
     "It should pass in the i-th position as the 2d arg to the cbfn": function () {
-      find([3], function (num, pos) {
-        eq(pos, 0)
+      find([3], function (num, index) {
+        eq(index, 0)
       });
     },
     "It should pass in the orig array as the 3d arg to the cbfn": function () {
@@ -81,40 +106,40 @@
       find([4], function () {
         eq(this.description, 'I am the value of the optThisObject');
       }, { description: "I am the value of the optThisObject" });
-    }
+    },
 
-    // "It should allow the array to be mutated by the cbfn before the first call of the cbfn.": function () {
-    //   var testArray = [3,4,5];
-    //   var arrayToMutate = [3,4,5];
-    //   find(testArray, function (num, idx, arrayToMutate) {
-    //     arrayToMutate.splice(idx, 1, 7)
-    //   })
-    //   eq(arrayToMutate !== [3, 4, 5], true);
-    // },
-    // "It should not visit any elems added to the array after the call to find begins.": function () {
-    //   var testArray = [3, 4, 5];
-    //   var arrayToMutate = [3, 4, 5];
-    //   find(testArray, function (num, idx, arrayToMutate) {
-    //     arrayToMutate.splice(3, 1, 9)
-    //   })
-    //   eq(testArray !== [3, 4, 5], true);
-    // },
-    // "It should use the value of an elem which existed when find visited that elem.": function () {
-    //   var testArray = [3, 4, 5];
-    //   find(testArray, function (num, idx, testArray) {
-    //     arrayToMutate.splice(1, 1)
-    //   })
-    //   eq(arrayToMutate == [3, 4, 5], true);
-    // },
-    // "It should visit deleted elements even if deleted by the cbfn.": function () {
-    //   var testArray = [3, 4, 5];
-    //   var timesCbfnCalled = 0
-    //   find(testArray, function (num, idx, array) {
-    //     testArray.splice(2,1)
-    //     timesCbfnCalled++
-    //   })
-    //   eq( timesCbfnCalled, 2 );
-    // }
+    "It should allow the array to be mutated by the cbfn before the first call of the cbfn.": function () {
+      var testArray = [3,4,5];
+      var arrayToMutate = [3,4,5];
+      find(testArray, function (num, idx, arrayToMutate) {
+        arrayToMutate.splice(idx, 1, 7)
+      })
+      eq(arrayToMutate !== [3, 4, 5], true);
+    },
+    "It should not visit any elems added to the array after the call to find begins.": function () {
+      var testArray = [3, 4, 5];
+
+      find(testArray, function (num, idx, array) {
+        array.push(8)
+      })
+      eq(testArray !== array, true);
+    },
+    "It should use the value of an elem which existed when find visited that elem.": function () {
+      var testArray = [3, 4, 5];
+      find(testArray, function (num, idx, testArray) {
+        arrayToMutate.splice(1, 1)
+      })
+      eq(arrayToMutate == [3, 4, 5], true);
+    },
+    "It should visit deleted elements even if deleted by the cbfn.": function () {
+      var testArray = [3, 4, 5];
+      var timesCbfnCalled = 0
+      find(testArray, function (num, idx, array) {
+        testArray.splice(2,1)
+        timesCbfnCalled++
+      })
+      eq( timesCbfnCalled, 2 );
+    }
 
   });
 
