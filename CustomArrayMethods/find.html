@@ -1,43 +1,42 @@
 <script src="../tinytest.js"></script>
 <script>
+
   function find(array, cbfn, optionalThisObject) {
     var findCallbackFn = cbfn;
-
-    if(optionalThisObject) {
+    if (optionalThisObject) {
       findCallbackFn = cbfn.bind(optionalThisObject)
     }
-
     for (var i = 0; i < array.length; i++) {
-      findCallbackFn(array[i],i,array);
+      findCallbackFn(array[i], i, array);
     }
   }
 
   tests({
-    "It should execute the callback fn 1x per array.length.": function() {
+    "It should execute the callback fn 1x per array.length.": function () {
       var cyclesOfCallback = 0;
-      find([2, 3, 4], function() {
+      find([2, 3, 4], function () {
         cyclesOfCallback++;
       });
       eq(cyclesOfCallback, 3);
     },
-    "It should return the first element of the array that passes the cbfn test.": function() {
+    "It should return the first element of the array that passes the cbfn test.": function () {
       var firstTruthyElem = 0;
-      find([4, 5], function(num) {
+      find([4, 5], function (num) {
         num > 4 ? (firstTruthyElem = num) : undefined;
       });
       eq(firstTruthyElem, 5);
     },
-    "It should return undefined if no elements of the array that pass the cbfn test.": function() {
+    "It should return undefined if no elements of the array that pass the cbfn test.": function () {
       var firstTruthyElem = 0;
-      find([4], function(num) {
+      find([4], function (num) {
         num > 4 ? (firstTruthyElem = num) : (firstTruthyElem = undefined);
       });
       eq(firstTruthyElem, undefined);
     },
-    "It should return the value of that first truthy test that passes.": function() {
+    "It should return the value of that first truthy test that passes.": function () {
       var firstTruthyElem = 0;
       var countOfTruthyElems = 0;
-      find([4, 5, 6], function(num) {
+      find([4, 5, 6], function (num) {
         num > 4 ? countOfTruthyElems++ : undefined;
         if (countOfTruthyElems === 1) {
           firstTruthyElem = num;
@@ -45,9 +44,9 @@
       });
       eq(firstTruthyElem, 5);
     },
-    "It should visit every index of the array, including blanks.": function() {
+    "It should visit every index of the array, including blanks.": function () {
       var countOfElemsVisited = 0;
-      find([4, , 6], function(num) {
+      find([4, , 6], function (num) {
         countOfElemsVisited++;
       });
       eq(countOfElemsVisited, 3);
@@ -62,15 +61,54 @@
         eq(this.description, 'I am the value of the optThisObject');
       }, { description: "I am the value of the optThisObject" });
     },
+    /**
+     * below fn works but is it a realistic test? It doesn't look for truthy responses w find()
+     */ 
     "It should not mutuate the original array.": function () {
-      var testArray = [3,4,5]
-      find(testArray, function(num, idx, array){});
-      eq(array, testArray);
-    }
+      var testArray = [3, 4, 5]
+      find(testArray, function(num, idx, origArray) {
+        eq(origArray, testArray);
+      })
+    },
+    // "It should allow the array to be mutated by the cbfn before the first call of the cbfn.": function () {
+    //   var testArray = [3,4,5];
+    //   var arrayToMutate = [3,4,5];
+    //   find(testArray, function (num, idx, arrayToMutate) {
+    //     arrayToMutate.splice(idx, 1, 7)
+    //   })
+    //   eq(arrayToMutate !== [3, 4, 5], true);
+    // },
+    // "It should not visit any elems added to the array after the call to find begins.": function () {
+    //   var testArray = [3, 4, 5];
+    //   var arrayToMutate = [3, 4, 5];
+    //   find(testArray, function (num, idx, arrayToMutate) {
+    //     arrayToMutate.splice(3, 1, 9)
+    //   })
+    //   eq(testArray !== [3, 4, 5], true);
+    // },
+    // "It should use the value of an elem which existed when find visited that elem.": function () {
+    //   var testArray = [3, 4, 5];
+    //   find(testArray, function (num, idx, testArray) {
+    //     arrayToMutate.splice(1, 1)
+    //   })
+    //   eq(arrayToMutate == [3, 4, 5], true);
+    // },
+    // "It should visit deleted elements even if deleted by the cbfn.": function () {
+    //   var testArray = [3, 4, 5];
+    //   var timesCbfnCalled = 0
+    //   find(testArray, function (num, idx, array) {
+    //     testArray.splice(2,1)
+    //     timesCbfnCalled++
+    //   })
+    //   eq( timesCbfnCalled, 2 );
+    // }
+
   });
+
 </script>
 
 <!-- 
+
 It should execute the callback fn 1x per array.length.  
 It should return the first element of the array that passes the cbfn test.
 It should return undefined if no elements of the array that pass the cbfn test.
@@ -78,17 +116,17 @@ It should return the value of that first truthy test that passes.
 It should visit every index of the array, including blanks.
 It should use the thisObj value in each callback fn iteration if a thisObj is provided.
 It should use undefined if no this value is provided.
-It should not mutuate the original array.
 
+Not sure if the last 5 work
+
+It should not mutuate the original array.
 It should allow the array to be mutated by the cbfn before the first call of the cbfn.
 It should not visit any elems added to the array after the call to find begins.
 It should use the value of an elem which existed when find visited that elem.
 It should visit deleted elements even if deleted by the cbfn.
- -->
 
-<!--
   find( origArray,
-    
+
   callback(
     origArray[i],
     i,
@@ -97,4 +135,6 @@ It should visit deleted elements even if deleted by the cbfn.
 
   optionalThisObject)
 
-arr.find(callback(elem, index, origArray), optionalThisObject) -->
+arr.find(callback(elem, index, origArray), optionalThisObject)
+
+-->
